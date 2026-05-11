@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    tools:context=".vendedor.MisProductosActivity">
+
+    <!-- TITULO -->
+    <TextView
+        android:id="@+id/txtTituloMisProductos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mis productos"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="20dp"/>
+
+    <!-- SUBTITULO -->
+    <TextView
+        android:id="@+id/txtSubMisProductos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Administra tus productos publicados"
+        android:textColor="@color/text_gray"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/txtTituloMisProductos"
+        app:layout_constraintStart_toStartOf="@id/txtTituloMisProductos"
+        android:layout_marginTop="4dp"/>
+
+    <!-- BUSCADOR -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutBuscarProducto"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Buscar producto"
+        app:boxBackgroundColor="@color/card_dark"
+        app:boxCornerRadiusTopStart="14dp"
+        app:boxCornerRadiusTopEnd="14dp"
+        app:boxCornerRadiusBottomStart="14dp"
+        app:boxCornerRadiusBottomEnd="14dp"
+        app:boxStrokeColor="@color/primary_blue"
+        app:hintTextColor="@color/text_gray"
+        app:layout_constraintTop_toBottomOf="@id/txtSubMisProductos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etBuscarProducto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:inputType="text"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- BOTON AGREGAR -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnAgregarProducto"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:text="Agregar producto"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:backgroundTint="@color/primary_blue"
+        app:cornerRadius="14dp"
+        app:layout_constraintTop_toBottomOf="@id/layoutBuscarProducto"
+        app:layout_constraintStart_toStartOf="@id/layoutBuscarProducto"
+        app:layout_constraintEnd_toEndOf="@id/layoutBuscarProducto"/>
+
+    <!-- LISTA PRODUCTOS -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerMisProductos"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="12dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/btnAgregarProducto"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/layoutBuscarProducto"
+        app:layout_constraintEnd_toEndOf="@id/layoutBuscarProducto"
+        android:layout_marginTop="10dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

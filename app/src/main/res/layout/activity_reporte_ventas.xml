@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    tools:context=".admin.ReporteVentasActivity">
+
+    <!-- TITULO -->
+    <TextView
+        android:id="@+id/txtTituloVentas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reporte de ventas"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="20dp"/>
+
+    <!-- SUBTITULO -->
+    <TextView
+        android:id="@+id/txtSubVentas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Resumen de ventas y transacciones"
+        android:textColor="@color/text_gray"
+        android:textSize="14sp"
+        app:layout_constraintTop_toBottomOf="@id/txtTituloVentas"
+        app:layout_constraintStart_toStartOf="@id/txtTituloVentas"
+        android:layout_marginTop="4dp"/>
+
+    <!-- CARD RESUMEN GENERAL -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardResumenVentas"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="@color/card_dark"
+        app:cardCornerRadius="18dp"
+        app:cardElevation="6dp"
+        app:layout_constraintTop_toBottomOf="@id/txtSubVentas"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Resumen general"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/txtTotalVentas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total ventas: $0"
+                android:textColor="@color/primary_blue"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:id="@+id/txtCantidadVentas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Transacciones: 0"
+                android:textColor="@color/text_gray"
+                android:layout_marginTop="4dp"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- FILTROS -->
+    <LinearLayout
+        android:id="@+id/layoutFiltros"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        app:layout_constraintTop_toBottomOf="@id/cardResumenVentas"
+        app:layout_constraintStart_toStartOf="@id/cardResumenVentas"
+        app:layout_constraintEnd_toEndOf="@id/cardResumenVentas">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnHoy"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:text="Hoy"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/primary_blue"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="6dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnMes"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:text="Mes"
+            android:textAllCaps="false"
+            android:backgroundTint="@color/card_dark"
+            app:strokeColor="@color/primary_blue"
+            app:strokeWidth="1dp"
+            app:cornerRadius="12dp"/>
+    </LinearLayout>
+
+    <!-- LISTA DE VENTAS -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerVentas"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="12dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/layoutFiltros"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/cardResumenVentas"
+        app:layout_constraintEnd_toEndOf="@id/cardResumenVentas"
+        android:layout_marginTop="10dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

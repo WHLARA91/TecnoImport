@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_dark"
+    tools:context=".SplashActivity">
+
+    <ImageView
+        android:id="@+id/imgLogoSplash"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:src="@drawable/Logo_tecnoimport"
+        android:contentDescription="@string/app_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/txtTecnoImport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TecnoImport"
+        android:textColor="@color/primary_blue"
+        android:textStyle="bold"
+        android:textSize="34sp"
+        app:layout_constraintTop_toBottomOf="@id/imgLogoSplash"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/txtEslogan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tecnología a tu alcance"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/txtTecnoImport"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"/>
+
+    <ProgressBar
+        android:id="@+id/progressSplash"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:indeterminateTint="@color/primary_blue"
+        app:layout_constraintTop_toBottomOf="@id/txtEslogan"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="40dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

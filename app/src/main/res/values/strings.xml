@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">TecnoImport</string>
+    <string name="bienvenido">Bienvenido</string>
+    <string name="subtitulo_login">Tecnología a tu alcance</string>
+    <string name="correo">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="splash_slogan">Tecnología a tu alcance</string>
+</resources>
