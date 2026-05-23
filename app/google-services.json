@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "580520598051",
+    "project_id": "tecnoimport",
+    "storage_bucket": "tecnoimport.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:580520598051:android:5c5b53a5adb88c9a10af96",
+        "android_client_info": {
+          "package_name": "com.ti.tecnoimport"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9ehzOtSdjBvpFuw1LDxoaFRt3FNdfchI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
