@@ -1,4 +1,3 @@
-<!-- activity_login.xml -->
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,7 +12,7 @@
         android:id="@+id/imgLogo"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:src="@drawable/Logo_tecnoimport"
+        android:src="@drawable/logo_tecnoimport"
         android:contentDescription="@string/app_name"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -130,7 +129,6 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:background="@drawable/bg_biometric"
-        android:src="@drawable/ic_fingerprint"
         android:padding="16dp"
         android:contentDescription="Biometría"
         app:tint="@color/primary_blue"

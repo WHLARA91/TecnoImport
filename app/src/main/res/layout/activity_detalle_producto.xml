@@ -14,7 +14,6 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:background="@drawable/bg_biometric"
-        android:src="@drawable/ic_back"
         android:contentDescription="Volver"
         app:tint="@color/white"
         app:layout_constraintTop_toTopOf="parent"

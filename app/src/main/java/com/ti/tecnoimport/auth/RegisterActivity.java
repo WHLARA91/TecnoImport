@@ -1,42 +1,52 @@
 package com.ti.tecnoimport.auth;
 
-import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
-package com.ti.tecnoimport.auth;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ti.tecnoimport.R;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText etNombre, etCorreo, etPassword;
     private Button btnRegistrar;
 
+    private RadioGroup radioGroupRoles;
+    private RadioButton radioAdmin, radioVendedor, radioComprador;
+
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Inicializar Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-        // Referencias XML
         etNombre = findViewById(R.id.etNombre);
         etCorreo = findViewById(R.id.etCorreo);
         etPassword = findViewById(R.id.etPassword);
+
         btnRegistrar = findViewById(R.id.btnRegistrar);
+
+        radioGroupRoles = findViewById(R.id.radioGroupRoles);
+        radioAdmin = findViewById(R.id.radioAdmin);
+        radioVendedor = findViewById(R.id.radioVendedor);
+        radioComprador = findViewById(R.id.radioComprador);
 
         btnRegistrar.setOnClickListener(v -> registrarUsuario());
     }
@@ -47,19 +57,18 @@ public class RegisterActivity extends AppCompatActivity {
         String correo = etCorreo.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
-        // Validaciones
         if (TextUtils.isEmpty(nombre)) {
-            etNombre.setError("Ingrese su nombre");
+            etNombre.setError("Ingrese nombre");
             return;
         }
 
         if (TextUtils.isEmpty(correo)) {
-            etCorreo.setError("Ingrese su correo");
+            etCorreo.setError("Ingrese correo");
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            etPassword.setError("Ingrese una contraseña");
+            etPassword.setError("Ingrese contraseña");
             return;
         }
 
@@ -68,19 +77,64 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // Registro Firebase
+        int selectedId = radioGroupRoles.getCheckedRadioButtonId();
+
+        if (selectedId == -1) {
+            Toast.makeText(this, "Seleccione un rol", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String rol = "";
+
+        if (selectedId == R.id.radioAdmin) {
+            rol = "admin";
+        } else if (selectedId == R.id.radioVendedor) {
+            rol = "vendedor";
+        } else if (selectedId == R.id.radioComprador) {
+            rol = "comprador";
+        }
+
+        String finalRol = rol;
+
         mAuth.createUserWithEmailAndPassword(correo, password)
                 .addOnCompleteListener(task -> {
 
                     if (task.isSuccessful()) {
 
-                        Toast.makeText(
-                                RegisterActivity.this,
-                                "Usuario registrado correctamente",
-                                Toast.LENGTH_LONG
-                        ).show();
+                        String uid = mAuth.getCurrentUser().getUid();
 
-                        finish();
+                        Map<String, Object> usuario = new HashMap<>();
+                        usuario.put("nombre", nombre);
+                        usuario.put("correo", correo);
+                        usuario.put("rol", finalRol);
+                        usuario.put("uid", uid);
+
+                        db.collection("usuarios")
+                                .document(uid)
+                                .set(usuario)
+                                .addOnSuccessListener(unused -> {
+
+                                    Toast.makeText(
+                                            RegisterActivity.this,
+                                            "Usuario registrado",
+                                            Toast.LENGTH_LONG
+                                    ).show();
+
+                                    startActivity(new Intent(
+                                            RegisterActivity.this,
+                                            LoginActivity.class
+                                    ));
+
+                                    finish();
+
+                                }).addOnFailureListener(e -> {
+
+                                    Toast.makeText(
+                                            RegisterActivity.this,
+                                            "Error Firestore",
+                                            Toast.LENGTH_SHORT
+                                    ).show();
+                                });
 
                     } else {
 

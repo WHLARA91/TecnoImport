@@ -13,7 +13,6 @@
         android:id="@+id/imgPerfil"
         android:layout_width="110dp"
         android:layout_height="110dp"
-        android:src="@drawable/vendedor.png"
         android:background="@drawable/bg_biometric"
         android:padding="20dp"
         app:tint="@color/primary_blue"

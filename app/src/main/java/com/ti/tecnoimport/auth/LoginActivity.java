@@ -5,37 +5,41 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ti.tecnoimport.R;
+import com.ti.tecnoimport.admin.DashboardAdminActivity;
+import com.ti.tecnoimport.comprador.DashboardCompradorActivity;
+import com.ti.tecnoimport.vendedor.DashboardVendedorActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText etCorreoLogin, etPasswordLogin;
+    private EditText etCorreo, etPassword;
     private Button btnLogin;
     private TextView txtCrearCuenta;
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-        // Referencias XML
-        etCorreoLogin = findViewById(R.id.etCorreoLogin);
-        etPasswordLogin = findViewById(R.id.etPasswordLogin);
+        etCorreo = findViewById(R.id.etCorreoLogin);
+        etPassword = findViewById(R.id.etPasswordLogin);
         btnLogin = findViewById(R.id.btnLogin);
         txtCrearCuenta = findViewById(R.id.txtCrearCuenta);
 
-        // Ir a registro
+        btnLogin.setOnClickListener(v -> loginUsuario());
         txtCrearCuenta.setOnClickListener(v -> {
 
             Intent intent = new Intent(
@@ -44,48 +48,74 @@ public class LoginActivity extends AppCompatActivity {
             );
 
             startActivity(intent);
-        });
 
-        // Login Firebase
-        btnLogin.setOnClickListener(v -> loginUsuario());
+        });
     }
 
     private void loginUsuario() {
 
-        String correo = etCorreoLogin.getText().toString().trim();
-        String password = etPasswordLogin.getText().toString().trim();
+        String correo = etCorreo.getText().toString().trim();
+        String password = etPassword.getText().toString().trim();
 
-        // Validaciones
         if (TextUtils.isEmpty(correo)) {
-            etCorreoLogin.setError("Ingrese su correo");
+            etCorreo.setError("Ingrese correo");
             return;
         }
 
         if (TextUtils.isEmpty(password)) {
-            etPasswordLogin.setError("Ingrese su contraseña");
+            etPassword.setError("Ingrese contraseña");
             return;
         }
 
-        // Login Firebase
         mAuth.signInWithEmailAndPassword(correo, password)
                 .addOnCompleteListener(task -> {
 
                     if (task.isSuccessful()) {
 
-                        Toast.makeText(
-                                LoginActivity.this,
-                                "Inicio de sesión exitoso",
-                                Toast.LENGTH_LONG
-                        ).show();
+                        String uid = mAuth.getCurrentUser().getUid();
 
-                        // Aquí luego enviaremos al Dashboard
+                        db.collection("usuarios")
+                                .document(uid)
+                                .get()
+                                .addOnSuccessListener(documentSnapshot -> {
+
+                                    if (documentSnapshot.exists()) {
+
+                                        String rol = documentSnapshot.getString("rol");
+
+                                        if (rol.equals("admin")) {
+
+                                            startActivity(new Intent(
+                                                    LoginActivity.this,
+                                                    DashboardAdminActivity.class
+                                            ));
+
+                                        } else if (rol.equals("vendedor")) {
+
+                                            startActivity(new Intent(
+                                                    LoginActivity.this,
+                                                    DashboardVendedorActivity.class
+                                            ));
+
+                                        } else {
+
+                                            startActivity(new Intent(
+                                                    LoginActivity.this,
+                                                    DashboardCompradorActivity.class
+                                            ));
+                                        }
+
+                                        finish();
+                                    }
+
+                                });
 
                     } else {
 
                         Toast.makeText(
                                 LoginActivity.this,
-                                "Credenciales incorrectas",
-                                Toast.LENGTH_LONG
+                                "Error login",
+                                Toast.LENGTH_SHORT
                         ).show();
                     }
                 });

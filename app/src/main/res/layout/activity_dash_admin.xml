@@ -13,7 +13,7 @@
         android:id="@+id/imgLogoAdmin"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/Logo_tecnoimport"
+        android:src="@drawable/logo_tecnoimport"
         android:contentDescription="@string/app_name"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,9 +77,8 @@
 
                 <ImageView
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_productos"
-                    app:tint="@color/primary_blue"/>
+                    android:layout_height="40dp"/>
+                <!--android:src="@drawable/ic_productos"-->
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -110,21 +109,20 @@
 
                 <ImageView
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_users"
-                    app:tint="@color/primary_blue"/>
+                    android:layout_height="40dp"/>
+        <!--android:src="@drawable/ic_users"-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Usuarios"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Usuarios"
+       android:textColor="@color/white"
+       android:textStyle="bold"
+       android:layout_marginTop="8dp"/>
+</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
 
-        <!-- VENTAS -->
+<!-- VENTAS -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardVentas"
             android:layout_width="0dp"
@@ -143,21 +141,21 @@
 
                 <ImageView
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_ventas"
-                    app:tint="@color/primary_blue"/>
+                    android:layout_height="40dp"/>
+        <!--android:src="@drawable/ic_ventas"-->
+       app:tint="@color/primary_blue"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ventas"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Ventas"
+       android:textColor="@color/white"
+       android:textStyle="bold"
+       android:layout_marginTop="8dp"/>
+</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
 
-        <!-- REPORTES -->
+<!-- REPORTES -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardReportes"
             android:layout_width="0dp"
@@ -176,21 +174,21 @@
 
                 <ImageView
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_reportes"
-                    app:tint="@color/primary_blue"/>
+                    android:layout_height="40dp"/>
+        <!--android:src="@drawable/ic_reportes"-->
+       app:tint="@color/primary_blue"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Reportes"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Reportes"
+       android:textColor="@color/white"
+       android:textStyle="bold"
+       android:layout_marginTop="8dp"/>
+</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
 
-        <!-- CONFIGURACION -->
+<!-- CONFIGURACION -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardConfig"
             android:layout_width="0dp"
@@ -209,21 +207,21 @@
 
                 <ImageView
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_config"
-                    app:tint="@color/primary_blue"/>
+                    android:layout_height="40dp"/>
+        <!--android:src="@drawable/ic_config"-->
+       app:tint="@color/primary_blue"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Config"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+   <TextView
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Config"
+       android:textColor="@color/white"
+       android:textStyle="bold"
+       android:layout_marginTop="8dp"/>
+</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
 
-        <!-- LOGOUT -->
+<!-- LOGOUT -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardSalir"
             android:layout_width="0dp"
@@ -242,20 +240,20 @@
 
                 <ImageView
                     android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_logout"
-                    app:tint="@color/primary_blue"/>
+                    android:layout_height="40dp"/>
+                <!--android:src="@drawable/ic_logout"-->
+               app:tint="@color/primary_blue"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Salir"
-                    android:textColor="@color/white"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="Salir"
+               android:textColor="@color/white"
+               android:textStyle="bold"
+               android:layout_marginTop="8dp"/>
+       </LinearLayout>
+   </com.google.android.material.card.MaterialCardView>
 
-    </GridLayout>
+</GridLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

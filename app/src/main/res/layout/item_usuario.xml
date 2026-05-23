@@ -18,7 +18,6 @@
         <ImageView
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:src="@drawable/ic_users"
             app:tint="@color/primary_blue"/>
 
         <LinearLayout
@@ -51,7 +50,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/bg_biometric"
-            android:src="@drawable/ic_edit"
+
             app:tint="@color/primary_blue"
             android:contentDescription="Editar"/>
 
@@ -60,7 +59,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/bg_biometric"
-            android:src="@drawable/ic_delete"
+
             app:tint="@color/primary_blue"
             android:contentDescription="Eliminar"/>
 
