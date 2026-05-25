@@ -72,6 +72,11 @@ public class LoginActivity extends AppCompatActivity {
 
                     if (task.isSuccessful()) {
 
+                        if (mAuth.getCurrentUser() == null) {
+                            Toast.makeText(this, "Error de sesión", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
                         String uid = mAuth.getCurrentUser().getUid();
 
                         db.collection("usuarios")
@@ -79,42 +84,51 @@ public class LoginActivity extends AppCompatActivity {
                                 .get()
                                 .addOnSuccessListener(documentSnapshot -> {
 
-                                    if (documentSnapshot.exists()) {
-
-                                        String rol = documentSnapshot.getString("rol");
-
-                                        if (rol.equals("admin")) {
-
-                                            startActivity(new Intent(
-                                                    LoginActivity.this,
-                                                    DashboardAdminActivity.class
-                                            ));
-
-                                        } else if (rol.equals("vendedor")) {
-
-                                            startActivity(new Intent(
-                                                    LoginActivity.this,
-                                                    DashboardVendedorActivity.class
-                                            ));
-
-                                        } else {
-
-                                            startActivity(new Intent(
-                                                    LoginActivity.this,
-                                                    DashboardCompradorActivity.class
-                                            ));
-                                        }
-
-                                        finish();
+                                    if (!documentSnapshot.exists()) {
+                                        Toast.makeText(this, "Usuario no existe en BD", Toast.LENGTH_SHORT).show();
+                                        return;
                                     }
 
-                                });
+                                    String rol = documentSnapshot.getString("rol");
+
+                                    if ("admin".equals(rol)) {
+
+                                        startActivity(new Intent(
+                                                LoginActivity.this,
+                                                DashboardAdminActivity.class
+                                        ));
+
+                                    } else if ("vendedor".equals(rol)) {
+
+                                        startActivity(new Intent(
+                                                LoginActivity.this,
+                                                DashboardVendedorActivity.class
+                                        ));
+
+                                    } else {
+
+                                        startActivity(new Intent(
+                                                LoginActivity.this,
+                                                DashboardCompradorActivity.class
+                                        ));
+                                    }
+
+                                    finish();
+
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(
+                                                LoginActivity.this,
+                                                "Error Firestore: " + e.getMessage(),
+                                                Toast.LENGTH_SHORT
+                                        ).show()
+                                );
 
                     } else {
 
                         Toast.makeText(
                                 LoginActivity.this,
-                                "Error login",
+                                "Error login: " + task.getException().getMessage(),
                                 Toast.LENGTH_SHORT
                         ).show();
                     }

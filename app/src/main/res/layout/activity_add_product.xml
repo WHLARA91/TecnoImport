@@ -12,13 +12,7 @@
         android:orientation="vertical"
         android:padding="24dp">
 
-        <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:src="@drawable/logo_tecnoimport"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"/>
-
+        <!-- Título -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,8 +21,19 @@
             android:textSize="28sp"
             android:textStyle="bold"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"/>
 
+        <!-- Imagen producto (selector + preview) -->
+        <EditText
+            android:id="@+id/etUrlImagenProducto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Pegue la URL de la imagen aquí"
+            android:textColor="@color/white"
+            android:layout_marginTop="16dp"/>
+
+        <!-- Nombre -->
         <EditText
             android:id="@+id/etNombreProducto"
             android:layout_width="match_parent"
@@ -37,8 +42,9 @@
             android:textColor="@color/white"
             android:textColorHint="@color/text_gray"
             android:backgroundTint="@color/primary_blue"
-            android:layout_marginTop="40dp"/>
+            android:layout_marginBottom="15dp"/>
 
+        <!-- Descripción -->
         <EditText
             android:id="@+id/etDescripcionProducto"
             android:layout_width="match_parent"
@@ -49,8 +55,9 @@
             android:textColor="@color/white"
             android:textColorHint="@color/text_gray"
             android:backgroundTint="@color/primary_blue"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginBottom="15dp"/>
 
+        <!-- Precio -->
         <EditText
             android:id="@+id/etPrecioProducto"
             android:layout_width="match_parent"
@@ -60,8 +67,9 @@
             android:textColor="@color/white"
             android:textColorHint="@color/text_gray"
             android:backgroundTint="@color/primary_blue"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginBottom="25dp"/>
 
+        <!-- Botón guardar -->
         <Button
             android:id="@+id/btnGuardarProducto"
             android:layout_width="match_parent"
@@ -69,8 +77,7 @@
             android:text="Guardar Producto"
             android:textStyle="bold"
             android:textColor="@color/white"
-            android:backgroundTint="@color/primary_blue"
-            android:layout_marginTop="35dp"/>
+            android:backgroundTint="@color/primary_blue"/>
 
     </LinearLayout>
 

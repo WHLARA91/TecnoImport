@@ -15,8 +15,9 @@ import com.ti.tecnoimport.models.Product;
 public class AddProductActivity extends AppCompatActivity {
 
     private EditText etNombreProducto;
-    private EditText etDescripcionProducto;
+    private EditText etStringDescripcion;
     private EditText etPrecioProducto;
+    private EditText etUrlImagenProducto;
     private Button btnGuardarProducto;
 
     private FirebaseFirestore db;
@@ -29,18 +30,21 @@ public class AddProductActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         etNombreProducto = findViewById(R.id.etNombreProducto);
-        etDescripcionProducto = findViewById(R.id.etDescripcionProducto);
+        etStringDescripcion = findViewById(R.id.etDescripcionProducto);
         etPrecioProducto = findViewById(R.id.etPrecioProducto);
+
+        etUrlImagenProducto = findViewById(R.id.etUrlImagenProducto);
+
         btnGuardarProducto = findViewById(R.id.btnGuardarProducto);
 
         btnGuardarProducto.setOnClickListener(v -> guardarProducto());
     }
 
     private void guardarProducto() {
-
         String nombre = etNombreProducto.getText().toString().trim();
-        String descripcion = etDescripcionProducto.getText().toString().trim();
+        String descripcion = etStringDescripcion.getText().toString().trim();
         String precioTexto = etPrecioProducto.getText().toString().trim();
+        String urlImagen = etUrlImagenProducto.getText().toString().trim();
 
         if (TextUtils.isEmpty(nombre)) {
             etNombreProducto.setError("Ingrese nombre");
@@ -48,7 +52,7 @@ public class AddProductActivity extends AppCompatActivity {
         }
 
         if (TextUtils.isEmpty(descripcion)) {
-            etDescripcionProducto.setError("Ingrese descripción");
+            etStringDescripcion.setError("Ingrese descripción");
             return;
         }
 
@@ -57,33 +61,28 @@ public class AddProductActivity extends AppCompatActivity {
             return;
         }
 
+        if (TextUtils.isEmpty(urlImagen)) {
+            etUrlImagenProducto.setError("Ingrese la URL de la imagen");
+            return;
+        }
+
         double precio = Double.parseDouble(precioTexto);
 
         Product product = new Product(
                 nombre,
                 descripcion,
-                precio
+                precio,
+                urlImagen
         );
 
         db.collection("productos")
                 .add(product)
                 .addOnSuccessListener(documentReference -> {
-
-                    Toast.makeText(
-                            AddProductActivity.this,
-                            "Producto guardado",
-                            Toast.LENGTH_SHORT
-                    ).show();
-
-                    finish();
-
+                    Toast.makeText(AddProductActivity.this, "Producto creado con éxito", Toast.LENGTH_SHORT).show();
+                    finish(); // Regresa al Dashboard
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(
-                            AddProductActivity.this,
-                            "Error: " + e.getMessage(),
-                            Toast.LENGTH_LONG
-                    ).show();
+                    Toast.makeText(AddProductActivity.this, "Error al guardar: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 }

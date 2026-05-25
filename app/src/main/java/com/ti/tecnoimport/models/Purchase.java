@@ -1,26 +1,29 @@
 package com.ti.tecnoimport.models;
 
-public class Product {
+public class Purchase {
 
     private String nombre;
     private String descripcion;
     private double precio;
-    private String imagenUrl;
+    private String usuarioId;
+    private long fecha;
 
-    public Product() {
+    public Purchase() {
     }
 
-    public Product(
+    public Purchase(
             String nombre,
             String descripcion,
             double precio,
-            String imagenUrl
+            String usuarioId,
+            long fecha
     ) {
 
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.precio = precio;
-        this.imagenUrl = imagenUrl;
+        this.usuarioId = usuarioId;
+        this.fecha = fecha;
     }
 
     public String getNombre() {
@@ -47,11 +50,19 @@ public class Product {
         this.precio = precio;
     }
 
-    public String getImagenUrl() {
-        return imagenUrl;
+    public String getUsuarioId() {
+        return usuarioId;
     }
 
-    public void setImagenUrl(String imagenUrl) {
-        this.imagenUrl = imagenUrl;
+    public void setUsuarioId(String usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public long getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(long fecha) {
+        this.fecha = fecha;
     }
 }

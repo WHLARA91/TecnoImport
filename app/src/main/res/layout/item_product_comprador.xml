@@ -5,10 +5,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="16dp"
-    app:cardBackgroundColor="@color/card_dark"
-    app:cardElevation="4dp">
+    android:layout_margin="10dp"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="5dp"
+    app:cardBackgroundColor="@color/card_dark">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
             android:id="@+id/txtNombreProducto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Laptop Gamer"
+            android:text="Producto"
             android:textColor="@color/white"
             android:textStyle="bold"
             android:textSize="18sp"/>
@@ -29,7 +29,7 @@
             android:id="@+id/txtDescripcionProducto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="RTX 4060 - 16GB RAM"
+            android:text="Descripción"
             android:textColor="@color/text_gray"
             android:layout_marginTop="6dp"/>
 
@@ -37,11 +37,22 @@
             android:id="@+id/txtPrecioProducto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="$ 5.000.000"
+            android:text="$0"
             android:textColor="@color/primary_blue"
             android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="17sp"
             android:layout_marginTop="10dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAgregarCarrito"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="Agregar al carrito"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:backgroundTint="@color/primary_blue"
+            app:cornerRadius="14dp"
+            android:layout_marginTop="14dp"/>
 
     </LinearLayout>
 
