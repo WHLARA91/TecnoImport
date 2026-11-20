@@ -97,7 +97,7 @@
             android:textStyle="bold" />
 
         <!-- TARJETA -->
-        <com.google.android.material.radio.MaterialRadioButton
+        <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/rbTarjeta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
             android:textColorHint="@color/text_gray" />
 
         <!-- PSE / TRANSFERENCIA -->
-        <com.google.android.material.radio.MaterialRadioButton
+        <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/rbPse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
             android:textColor="@color/text_gray" />
 
         <!-- EFECTIVO -->
-        <com.google.android.material.radio.MaterialRadioButton
+        <com.google.android.material.radiobutton.MaterialRadioButton
             android:id="@+id/rbEfectivo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

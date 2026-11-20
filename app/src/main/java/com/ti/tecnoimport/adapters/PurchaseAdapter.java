@@ -1,117 +1,68 @@
 package com.ti.tecnoimport.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.ti.tecnoimport.R;
-import com.ti.tecnoimport.models.Purchase;
-
+import com.ti.tecnoimport.models.Orden;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class PurchaseAdapter
-        extends RecyclerView.Adapter<PurchaseAdapter.ViewHolder> {
+/**
+ * Adaptador para mostrar el historial de compras y transacciones confirmadas en Firestore.
+ */
+public class PurchaseAdapter extends RecyclerView.Adapter<PurchaseAdapter.PurchaseViewHolder> {
 
-    private List<Purchase> listaCompras;
+    private final Context context;
+    private final List<Orden> ordenes;
 
-    public PurchaseAdapter(List<Purchase> listaCompras) {
-
-        this.listaCompras = listaCompras;
+    public PurchaseAdapter(Context context, List<Orden> ordenes) {
+        this.context = context;
+        this.ordenes = ordenes;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(
-            @NonNull ViewGroup parent,
-            int viewType
-    ) {
-
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(
-                        R.layout.item_purchase,
-                        parent,
-                        false
-                );
-
-        return new ViewHolder(view);
+    public PurchaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_carrito, parent, false);
+        return new PurchaseViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(
-            @NonNull ViewHolder holder,
-            int position
-    ) {
+    public void onBindViewHolder(@NonNull PurchaseViewHolder holder, int position) {
+        Orden orden = ordenes.get(position);
+        NumberFormat formatoMoneda = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
 
-        Purchase purchase = listaCompras.get(position);
-
-        holder.txtNombre.setText(
-                purchase.getNombre()
-        );
-
-        holder.txtDescripcion.setText(
-                purchase.getDescripcion()
-        );
-
-        holder.txtPrecio.setText(
-                "$ " + purchase.getPrecio()
-        );
-
-        SimpleDateFormat sdf =
-                new SimpleDateFormat(
-                        "dd/MM/yyyy HH:mm",
-                        Locale.getDefault()
-                );
-
-        String fecha =
-                sdf.format(
-                        new Date(purchase.getFecha())
-                );
-
-        holder.txtFecha.setText(fecha);
+        holder.tvReferencia.setText("Ref. Pago: " + orden.getReferenciaPago());
+        holder.tvFecha.setText(sdf.format(new Date(orden.getFecha())));
+        holder.tvDireccion.setText("Entrega: " + orden.getDireccionEntrega());
+        holder.tvEstado.setText("Estado: " + orden.getEstado());
+        holder.tvTotal.setText(formatoMoneda.format(orden.getTotal()));
     }
 
     @Override
     public int getItemCount() {
-        return listaCompras.size();
+        return ordenes.size();
     }
 
-    public static class ViewHolder
-            extends RecyclerView.ViewHolder {
+    static class PurchaseViewHolder extends RecyclerView.ViewHolder {
+        TextView tvReferencia, tvFecha, tvDireccion, tvEstado, tvTotal;
 
-        TextView txtNombre;
-        TextView txtDescripcion;
-        TextView txtPrecio;
-        TextView txtFecha;
-
-        public ViewHolder(@NonNull View itemView) {
+        public PurchaseViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            txtNombre =
-                    itemView.findViewById(
-                            R.id.txtNombreCompra
-                    );
-
-            txtDescripcion =
-                    itemView.findViewById(
-                            R.id.txtDescripcionCompra
-                    );
-
-            txtPrecio =
-                    itemView.findViewById(
-                            R.id.txtPrecioCompra
-                    );
-
-            txtFecha =
-                    itemView.findViewById(
-                            R.id.txtFechaCompra
-                    );
+            tvReferencia = itemView.findViewById(R.id.tvReferenciaOrden);
+            tvFecha = itemView.findViewById(R.id.tvFechaOrden);
+            tvDireccion = itemView.findViewById(R.id.tvDireccionOrden);
+            tvEstado = itemView.findViewById(R.id.tvEstadoOrden);
+            tvTotal = itemView.findViewById(R.id.tvTotalOrden);
         }
     }
 }

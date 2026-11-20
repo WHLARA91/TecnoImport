@@ -1,85 +1,68 @@
 package com.ti.tecnoimport.comprador;
 
 import android.os.Bundle;
-
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.auth.FirebaseUser;
 import com.ti.tecnoimport.R;
 import com.ti.tecnoimport.adapters.PurchaseAdapter;
-import com.ti.tecnoimport.models.Purchase;
-
+import com.ti.tecnoimport.models.Orden;
+import com.ti.tecnoimport.repositories.AuthRepository;
+import com.ti.tecnoimport.repositories.CarritoOrdenRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PurchaseHistoryActivity
-        extends AppCompatActivity {
+/**
+ * Pantalla que muestra el historial de compras confirmadas del usuario autenticado.
+ * Consulta la colección 'compras' en Cloud Firestore filtrando por el UID del comprador.
+ */
+public class PurchaseHistoryActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerCompras;
-
-    private List<Purchase> listaCompras;
-
+    private RecyclerView rvHistorial;
     private PurchaseAdapter adapter;
-
-    private FirebaseFirestore db;
+    private final List<Orden> listaOrdenes = new ArrayList<>();
+    private CarritoOrdenRepository ordenRepository;
+    private AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(
-                R.layout.activity_purchase_history
-        );
+        setContentView(R.layout.activity_purchase_history);
 
-        recyclerCompras =
-                findViewById(R.id.recyclerCompras);
+        ordenRepository = new CarritoOrdenRepository();
+        authRepository = new AuthRepository();
 
-        recyclerCompras.setLayoutManager(
-                new LinearLayoutManager(this)
-        );
+        // Vincular el RecyclerView definido en activity_purchase_history.xml
+        rvHistorial = findViewById(R.id.recyclerCompras);
+        rvHistorial.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new PurchaseAdapter(this, listaOrdenes);
+        rvHistorial.setAdapter(adapter);
 
-        listaCompras = new ArrayList<>();
-
-        adapter =
-                new PurchaseAdapter(listaCompras);
-
-        recyclerCompras.setAdapter(adapter);
-
-        db = FirebaseFirestore.getInstance();
-
-        cargarCompras();
+        cargarHistorial();
     }
 
-    private void cargarCompras() {
+    /**
+     * Consulta en Cloud Firestore las órdenes registradas a nombre del comprador actual.
+     */
+    private void cargarHistorial() {
+        FirebaseUser user = authRepository.getUsuarioActual();
+        if (user == null) return;
 
-        String usuarioId =
-                FirebaseAuth.getInstance()
-                        .getCurrentUser()
-                        .getUid();
+        ordenRepository.listarOrdenes(user.getUid(), new CarritoOrdenRepository.OrdenesCallback() {
+            @Override
+            public void onResultado(List<Orden> ordenes) {
+                listaOrdenes.clear();
+                listaOrdenes.addAll(ordenes);
+                adapter.notifyDataSetChanged();
+            }
 
-        db.collection("compras")
-                .whereEqualTo("usuarioId", usuarioId)
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-
-                    listaCompras.clear();
-
-                    for (QueryDocumentSnapshot document :
-                            queryDocumentSnapshots) {
-
-                        Purchase purchase =
-                                document.toObject(
-                                        Purchase.class
-                                );
-
-                        listaCompras.add(purchase);
-                    }
-
-                    adapter.notifyDataSetChanged();
-
-                });
+            @Override
+            public void onError(String mensaje) {
+                Toast.makeText(PurchaseHistoryActivity.this,
+                        "Error cargando historial: " + mensaje, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -1,149 +1,103 @@
 package com.ti.tecnoimport.auth;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.ti.tecnoimport.R;
+import com.ti.tecnoimport.models.Usuario;
+import com.ti.tecnoimport.repositories.AuthRepository;
 
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * Pantalla de registro de nuevos usuarios en TecnoImport.
+ * Conecta la interfaz personalizada con Firebase Authentication y persiste
+ * el perfil con el rol seleccionado en Cloud Firestore.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText etNombre, etCorreo, etPassword;
-    private Button btnRegistrar;
-
     private RadioGroup radioGroupRoles;
-    private RadioButton radioAdmin, radioVendedor, radioComprador;
-
-    private FirebaseAuth mAuth;
-    private FirebaseFirestore db;
+    private Button btnRegistrar;
+    private AuthRepository authRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        authRepository = new AuthRepository();
 
+        // Vincular los IDs exactos definidos en activity_register.xml
         etNombre = findViewById(R.id.etNombre);
         etCorreo = findViewById(R.id.etCorreo);
         etPassword = findViewById(R.id.etPassword);
-
+        radioGroupRoles = findViewById(R.id.radioGroupRoles);
         btnRegistrar = findViewById(R.id.btnRegistrar);
 
-        radioGroupRoles = findViewById(R.id.radioGroupRoles);
-        radioAdmin = findViewById(R.id.radioAdmin);
-        radioVendedor = findViewById(R.id.radioVendedor);
-        radioComprador = findViewById(R.id.radioComprador);
-
-        btnRegistrar.setOnClickListener(v -> registrarUsuario());
+        btnRegistrar.setOnClickListener(v -> registrarCuenta());
     }
 
-    private void registrarUsuario() {
-
+    /**
+     * Valida los campos del formulario, obtiene el rol marcado en el RadioGroup
+     * y registra el usuario en Firebase Authentication y Cloud Firestore.
+     */
+    private void registrarCuenta() {
         String nombre = etNombre.getText().toString().trim();
         String correo = etCorreo.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
+        String rolSeleccionado = obtenerRolSeleccionado();
 
-        if (TextUtils.isEmpty(nombre)) {
-            etNombre.setError("Ingrese nombre");
-            return;
-        }
-
-        if (TextUtils.isEmpty(correo)) {
-            etCorreo.setError("Ingrese correo");
-            return;
-        }
-
-        if (TextUtils.isEmpty(password)) {
-            etPassword.setError("Ingrese contraseña");
+        if (TextUtils.isEmpty(nombre) || TextUtils.isEmpty(correo)) {
+            Toast.makeText(this, "Ingresa tu nombre completo y correo electrónico", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (password.length() < 6) {
-            etPassword.setError("Mínimo 6 caracteres");
+            Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        if (rolSeleccionado == null) {
+            Toast.makeText(this, "Selecciona un rol para la cuenta", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        btnRegistrar.setEnabled(false);
+
+        authRepository.registrarUsuario(nombre, correo, password, "", rolSeleccionado, new AuthRepository.AuthCallback() {
+            @Override
+            public void onExito(Usuario usuario) {
+                Toast.makeText(RegisterActivity.this,
+                        "Registro exitoso como " + usuario.getRol(), Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onError(String mensaje) {
+                btnRegistrar.setEnabled(true);
+                Toast.makeText(RegisterActivity.this, mensaje, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    /**
+     * Identifica qué RadioButton fue seleccionado dentro de radioGroupRoles
+     * y devuelve la constante de rol correspondiente.
+     *
+     * @return Rol en mayúsculas (ADMIN, VENDEDOR, COMPRADOR) o null si no hay selección.
+     */
+    private String obtenerRolSeleccionado() {
         int selectedId = radioGroupRoles.getCheckedRadioButtonId();
-
-        if (selectedId == -1) {
-            Toast.makeText(this, "Seleccione un rol", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String rol = "";
-
         if (selectedId == R.id.radioAdmin) {
-            rol = "admin";
+            return Usuario.ROL_ADMIN;
         } else if (selectedId == R.id.radioVendedor) {
-            rol = "vendedor";
+            return Usuario.ROL_VENDEDOR;
         } else if (selectedId == R.id.radioComprador) {
-            rol = "comprador";
+            return Usuario.ROL_COMPRADOR;
         }
-
-        String finalRol = rol;
-
-        mAuth.createUserWithEmailAndPassword(correo, password)
-                .addOnCompleteListener(task -> {
-
-                    if (task.isSuccessful()) {
-
-                        String uid = mAuth.getCurrentUser().getUid();
-
-                        Map<String, Object> usuario = new HashMap<>();
-                        usuario.put("nombre", nombre);
-                        usuario.put("correo", correo);
-                        usuario.put("rol", finalRol);
-                        usuario.put("uid", uid);
-
-                        db.collection("usuarios")
-                                .document(uid)
-                                .set(usuario)
-                                .addOnSuccessListener(unused -> {
-
-                                    Toast.makeText(
-                                            RegisterActivity.this,
-                                            "Usuario registrado",
-                                            Toast.LENGTH_LONG
-                                    ).show();
-
-                                    startActivity(new Intent(
-                                            RegisterActivity.this,
-                                            LoginActivity.class
-                                    ));
-
-                                    finish();
-
-                                }).addOnFailureListener(e -> {
-
-                                    Toast.makeText(
-                                            RegisterActivity.this,
-                                            "Error Firestore",
-                                            Toast.LENGTH_SHORT
-                                    ).show();
-                                });
-
-                    } else {
-
-                        Toast.makeText(
-                                RegisterActivity.this,
-                                "Error: " + task.getException().getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
-                    }
-                });
+        return null;
     }
 }

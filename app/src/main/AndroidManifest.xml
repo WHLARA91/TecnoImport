@@ -1,51 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TecnoImport">
 
-        <activity
-            android:name=".auth.LoginActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".auth.RegisterActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".admin.DashboardAdminActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".vendedor.DashboardVendedorActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".vendedor.AddProductActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".comprador.DashboardCompradorActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".comprador.CartActivity"
-            android:exported="false" />
-
-        <activity
-            android:name=".comprador.PurchaseHistoryActivity"
-            android:exported="false" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <activity
             android:name=".MainActivity"
@@ -56,6 +37,21 @@
             </intent-filter>
         </activity>
 
-    </application>
+        <!-- Módulo Autenticación -->
+        <activity android:name=".auth.LoginActivity" android:exported="false" />
+        <activity android:name=".auth.RegisterActivity" android:exported="false" />
 
+        <!-- Módulo Administrador -->
+        <activity android:name=".admin.DashboardAdminActivity" android:exported="false" />
+
+        <!-- Módulo Vendedor -->
+        <activity android:name=".vendedor.DashboardVendedorActivity" android:exported="false" />
+        <activity android:name=".vendedor.AddProductActivity" android:exported="false" />
+
+        <!-- Módulo Comprador -->
+        <activity android:name=".comprador.DashboardCompradorActivity" android:exported="false" />
+        <activity android:name=".comprador.CartActivity" android:exported="false" />
+        <activity android:name=".comprador.PurchaseHistoryActivity" android:exported="false" />
+
+    </application>
 </manifest>

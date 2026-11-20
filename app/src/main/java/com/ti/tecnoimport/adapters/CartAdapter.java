@@ -1,175 +1,81 @@
 package com.ti.tecnoimport.adapters;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.bumptech.glide.Glide;
 import com.ti.tecnoimport.R;
-import com.ti.tecnoimport.comprador.CartActivity;
-import com.ti.tecnoimport.models.CartItem;
-
+import com.ti.tecnoimport.models.ItemCarrito;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 
-public class CartAdapter
-        extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
+/**
+ * Adaptador para visualizar y eliminar los artículos agregados al carrito de compras.
+ */
+public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder> {
 
-    private List<CartItem> listaCarrito;
+    public interface OnCartItemDeleteListener {
+        void onEliminarItem(ItemCarrito item);
+    }
 
-    private Context context;
+    private final Context context;
+    private final List<ItemCarrito> items;
+    private final OnCartItemDeleteListener deleteListener;
 
-    public CartAdapter(
-            List<CartItem> listaCarrito,
-            Context context
-    ) {
-
-        this.listaCarrito = listaCarrito;
+    public CartAdapter(Context context, List<ItemCarrito> items, OnCartItemDeleteListener deleteListener) {
         this.context = context;
+        this.items = items;
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(
-            @NonNull ViewGroup parent,
-            int viewType
-    ) {
-
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(
-                        R.layout.item_cart,
-                        parent,
-                        false
-                );
-
-        return new ViewHolder(view);
+    public CartViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.item_carrito, parent, false);
+        return new CartViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(
-            @NonNull ViewHolder holder,
-            int position
-    ) {
+    public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
+        ItemCarrito item = items.get(position);
+        NumberFormat formato = NumberFormat.getCurrencyInstance(new Locale("es", "CO"));
 
-        CartItem item = listaCarrito.get(position);
+        holder.tvNombre.setText(item.getNombre());
+        holder.tvCantidad.setText("Cantidad: " + item.getCantidad());
+        holder.tvSubtotal.setText(formato.format(item.calcularSubtotal()));
 
-        holder.txtNombre.setText(item.getNombre());
+        Glide.with(context)
+                .load(item.getImagenUrl())
+                .placeholder(R.mipmap.ic_launcher)
+                .into(holder.ivImagen);
 
-        holder.txtDescripcion.setText(
-                item.getDescripcion()
-        );
-
-        holder.txtPrecio.setText(
-                "$ " + item.getPrecio()
-        );
-
-        holder.btnEliminar.setOnClickListener(v -> {
-
-            AlertDialog.Builder builder =
-                    new AlertDialog.Builder(context);
-
-            builder.setTitle("Eliminar");
-
-            builder.setMessage(
-                    "¿Desea eliminar este producto?"
-            );
-
-            builder.setPositiveButton(
-                    "Sí",
-                    (dialog, which) -> eliminarProducto(item, position)
-            );
-
-            builder.setNegativeButton(
-                    "Cancelar",
-                    null
-            );
-
-            builder.show();
-
-        });
-    }
-
-    private void eliminarProducto(
-            CartItem item,
-            int position
-    ) {
-
-        String usuarioId =
-                FirebaseAuth.getInstance()
-                        .getCurrentUser()
-                        .getUid();
-
-        FirebaseFirestore.getInstance()
-                .collection("carrito")
-                .document(usuarioId)
-                .collection("productos")
-                .document(item.getId())
-                .delete()
-                .addOnSuccessListener(unused -> {
-
-                    listaCarrito.remove(position);
-
-                    notifyItemRemoved(position);
-
-                    if (context instanceof CartActivity) {
-
-                        ((CartActivity) context)
-                                .actualizarTotal();
-                    }
-
-                    Toast.makeText(
-                            context,
-                            "Producto eliminado",
-                            Toast.LENGTH_SHORT
-                    ).show();
-
-                });
+        holder.btnEliminar.setOnClickListener(v -> deleteListener.onEliminarItem(item));
     }
 
     @Override
     public int getItemCount() {
-        return listaCarrito.size();
+        return items.size();
     }
 
-    public static class ViewHolder
-            extends RecyclerView.ViewHolder {
+    static class CartViewHolder extends RecyclerView.ViewHolder {
+        ImageView ivImagen;
+        TextView tvNombre, tvCantidad, tvSubtotal;
+        ImageButton btnEliminar;
 
-        TextView txtNombre;
-        TextView txtDescripcion;
-        TextView txtPrecio;
-
-        MaterialButton btnEliminar;
-
-        public ViewHolder(@NonNull View itemView) {
+        public CartViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            txtNombre =
-                    itemView.findViewById(
-                            R.id.txtNombreCarrito
-                    );
-
-            txtDescripcion =
-                    itemView.findViewById(
-                            R.id.txtDescripcionCarrito
-                    );
-
-            txtPrecio =
-                    itemView.findViewById(
-                            R.id.txtPrecioCarrito
-                    );
-
-            btnEliminar =
-                    itemView.findViewById(
-                            R.id.btnEliminar
-                    );
+            ivImagen = itemView.findViewById(R.id.ivItemCarrito);
+            tvNombre = itemView.findViewById(R.id.tvNombreItemCarrito);
+            tvCantidad = itemView.findViewById(R.id.tvCantidadItemCarrito);
+            tvSubtotal = itemView.findViewById(R.id.tvSubtotalItemCarrito);
+            btnEliminar = itemView.findViewById(R.id.btnEliminarItemCarrito);
         }
     }
 }

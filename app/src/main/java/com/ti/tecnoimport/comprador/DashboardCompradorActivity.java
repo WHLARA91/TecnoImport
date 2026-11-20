@@ -2,91 +2,125 @@ package com.ti.tecnoimport.comprador;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.button.MaterialButton;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.auth.FirebaseUser;
 import com.ti.tecnoimport.R;
 import com.ti.tecnoimport.adapters.CompradorProductAdapter;
-import com.ti.tecnoimport.models.Product;
-
+import com.ti.tecnoimport.auth.LoginActivity;
+import com.ti.tecnoimport.models.Producto;
+import com.ti.tecnoimport.repositories.AuthRepository;
+import com.ti.tecnoimport.repositories.CarritoOrdenRepository;
+import com.ti.tecnoimport.repositories.ProductoRepository;
+import com.ti.tecnoimport.utils.SessionManager;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Pantalla principal del rol Comprador.
+ * Muestra el catálogo de productos tecnológicos en tiempo real desde Cloud Firestore
+ * y permite agregar artículos al carrito, consultar el historial de compras y cerrar sesión.
+ */
 public class DashboardCompradorActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerProductos;
-    private MaterialButton btnVerCarrito;
-    private MaterialButton btnMisCompras;
-    private List<Product> listaProductos;
+    private RecyclerView rvProductos;
+    private Button btnVerCarrito, btnHistorial;
+    private View btnCerrarSesion;
+
+    private ProductoRepository productoRepository;
+    private CarritoOrdenRepository carritoRepository;
+    private AuthRepository authRepository;
     private CompradorProductAdapter adapter;
-    private FirebaseFirestore db;
+    private final List<Producto> listaProductos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard_comprador);
 
-        // Enlace de vistas de forma segura
-        recyclerProductos = findViewById(R.id.recyclerProductos);
+        productoRepository = new ProductoRepository();
+        carritoRepository = new CarritoOrdenRepository();
+        authRepository = new AuthRepository();
+
+        // Vincular los IDs exactos definidos en activity_dashboard_comprador.xml
+        rvProductos = findViewById(R.id.recyclerProductos);
         btnVerCarrito = findViewById(R.id.btnVerCarrito);
-        btnMisCompras = findViewById(R.id.btnMisCompras);
+        btnHistorial = findViewById(R.id.btnMisCompras);
+        btnCerrarSesion = findViewById(R.id.btnCerrarSesionComprador);
 
-        recyclerProductos.setLayoutManager(new LinearLayoutManager(this));
-        listaProductos = new ArrayList<>();
-        adapter = new CompradorProductAdapter(listaProductos);
-        recyclerProductos.setAdapter(adapter);
+        rvProductos.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new CompradorProductAdapter(this, listaProductos, this::agregarProductoAlCarrito);
+        rvProductos.setAdapter(adapter);
 
-        db = FirebaseFirestore.getInstance();
+        btnVerCarrito.setOnClickListener(v ->
+                startActivity(new Intent(this, CartActivity.class)));
 
-        // Cargar los datos desde Firestore de manera controlada
-        cargarProductos();
+        btnHistorial.setOnClickListener(v ->
+                startActivity(new Intent(this, PurchaseHistoryActivity.class)));
 
-        btnVerCarrito.setOnClickListener(v -> {
-            Intent intent = new Intent(DashboardCompradorActivity.this, CartActivity.class);
-            startActivity(intent);
-        });
+        if (btnCerrarSesion != null) {
+            btnCerrarSesion.setOnClickListener(v -> cerrarSesion());
+        }
 
-        btnMisCompras.setOnClickListener(v -> {
-            Intent intent = new Intent(DashboardCompradorActivity.this, PurchaseHistoryActivity.class);
-            startActivity(intent);
+        cargarCatalogo();
+    }
+
+    /**
+     * Consulta los productos disponibles en Cloud Firestore y actualiza el catálogo.
+     */
+    private void cargarCatalogo() {
+        productoRepository.listarTodosLosProductos(new ProductoRepository.ListaProductosCallback() {
+            @Override
+            public void onResultado(List<Producto> productos) {
+                listaProductos.clear();
+                listaProductos.addAll(productos);
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(String mensaje) {
+                Toast.makeText(DashboardCompradorActivity.this,
+                        "Error cargando catálogo: " + mensaje, Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    private void cargarProductos() {
-        db.collection("productos")
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-                    try {
-                        listaProductos.clear();
-                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                            try {
-                                // Mapeo seguro de Firebase al modelo Product
-                                Product product = document.toObject(Product.class);
-                                listaProductos.add(product);
-                            } catch (Exception e) {
-                                // Si un producto individual de la BD está corrupto, avisa pero no tumba la app
-                                Toast.makeText(DashboardCompradorActivity.this,
-                                        "Error en formato de producto: " + e.getMessage(),
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        }
-                        adapter.notifyDataSetChanged();
-                    } catch (Exception e) {
-                        Toast.makeText(DashboardCompradorActivity.this,
-                                "Error al actualizar la lista: " + e.getMessage(),
-                                Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(DashboardCompradorActivity.this,
-                            "Error de conexión con Firestore: " + e.getMessage(),
-                            Toast.LENGTH_SHORT).show();
-                });
+    /**
+     * Agrega una unidad del producto seleccionado al carrito del comprador en Firestore.
+     *
+     * @param producto Producto seleccionado desde el catálogo.
+     */
+    private void agregarProductoAlCarrito(Producto producto) {
+        FirebaseUser user = authRepository.getUsuarioActual();
+        if (user == null) return;
+
+        carritoRepository.agregarAlCarrito(user.getUid(), producto, 1, new CarritoOrdenRepository.OperacionCallback() {
+            @Override
+            public void onExito() {
+                Toast.makeText(DashboardCompradorActivity.this,
+                        producto.getNombre() + " agregado al carrito", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(String mensaje) {
+                Toast.makeText(DashboardCompradorActivity.this, mensaje, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Cierra la sesión en Firebase Auth y redirige a LoginActivity limpiando el historial.
+     */
+    private void cerrarSesion() {
+        authRepository.cerrarSesion();
+        new SessionManager(this).cerrarSesionActiva();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }
